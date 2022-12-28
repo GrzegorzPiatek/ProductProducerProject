@@ -11,45 +11,43 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-@*<form method="get" class="filter">
-    <div class="input-wrapper">
-        <div class="form-group">
-            <label for="sortColumn">Sort by:</label>
-            @Html.DropDownList("sortColumn", new[] {
-            new SelectListItem { Text = "Name", Value = "Name" },
-            new SelectListItem { Text = "Alcohol Type", Value = "AlcoholType" },
-            new SelectListItem { Text = "Producer Name", Value = "Producer.Name" }
-            }, new { @class = "form-control" })
-        </div>
-        <div class="form-group">
-            <label for="filterValue">Filter:</label>
-            <input type="search" name="filterValue" value="@ViewContext.HttpContext.Request.Query["filterValue"]" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary filtrBtn">Apply</button>
-    </div>
-</form>
-*@
 <form method="get" class="filter">
     <div class="input-wrapper">
+
         <div class="form-group">
-            <label for="sortColumn">Sort by:</label>
-            @Html.DropDownList("sortColumn", new[] {
-            new SelectListItem { Text = "Name", Value = "Name" },
-            new SelectListItem { Text = "Alcohol Type", Value = "AlcoholType" },
-            new SelectListItem { Text = "Producer Name", Value = "Producer.Name" }
-            }, new { @class = "form-control" })
+        <label for="sortColumn">Sort by:</label>
+        @Html.DropDownList("sortColumn", new[] {
+            new SelectListItem { Text = "Name", Value = "Name", Selected = ViewContext.HttpContext.Request.Query["sortColumn"] == "Name" },
+            new SelectListItem { Text = "Producer Name", Value = "Producer.Name", Selected = ViewContext.HttpContext.Request.Query["sortColumn"] == "Producer.Name" }
+        }, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
             <label for="sortOrder">Sort order:</label>
             @Html.DropDownList("sortOrder", new[] {
-            new SelectListItem { Text = "Ascending", Value = "asc" },
-            new SelectListItem { Text = "Descending", Value = "desc" }
+                new SelectListItem { Text = "Ascending", Value = "asc", Selected = ViewContext.HttpContext.Request.Query["sortOrder"] == "asc" },
+                new SelectListItem { Text = "Descending", Value = "desc", Selected = ViewContext.HttpContext.Request.Query["sortOrder"] == "desc" }
             }, new { @class = "form-control" })
-            <input type="hidden" name="currentSortOrder" value="@ViewContext.HttpContext.Request.Query["sortOrder"]" />
         </div>
+
         <div class="form-group">
-            <label for="filterValue">Filter:</label>
+            <label for="alcoholType">Alcohol type:</label>
+            <select name="alcoholType" class="form-control">
+                <option value=""></option>
+
+                @foreach (var alcoholType in (IEnumerable<AlcoholType>)ViewData["AlcoholTypes"])
+                {
+                    <option value="@alcoholType">@alcoholType</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="filterValue">Search:</label>
             <input type="search" name="filterValue" value="@ViewContext.HttpContext.Request.Query["filterValue"]" class="form-control" />
         </div>
         <button type="submit" class="btn btn-primary filtrBtn">Apply</button>
+
     </div>
 </form>
 
@@ -63,7 +61,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Producer)
+                @Html.DisplayNameFor(model => model.Producer.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AlcoholType)
@@ -88,3 +86,17 @@
         }
     </tbody>
 </table>
+
+
+
+@{
+    var selectedAlcoholType = ViewContext.HttpContext.Request.Query["alcoholType"];
+    if (selectedAlcoholType.Any())
+    {
+        <text>
+            <script>
+                document.querySelector('select[name="alcoholType"] option[value="@selectedAlcoholType"]').setAttribute('selected', '');
+            </script>
+        </text>
+    }
+}
