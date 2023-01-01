@@ -8,12 +8,13 @@ namespace PWProject.Models
 
         public DataContext(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _configuration = configuration; 
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(_configuration.GetConnectionString("SqliteConnectionString"));
+            //optionsBuilder.UseSqlite(_configuration.GetConnectionString("SqliteConnectionString"));
+            optionsBuilder.UseSqlite(_configuration.GetConnectionString("SqliteSecondConnectionString"));
         }
         public DbSet<Producer> Producers { get; set; }
         public DbSet<Product> Products { get; set; }
